@@ -1,0 +1,95 @@
+﻿@model HomeWork_5.ViewModels.HomeViewModel
+
+@section Styles {
+    <style>
+        .book-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            width: 250px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+}
+
+<h1 class="mb-4">Book Store Catalog</h1>
+
+<div class="row mb-5">
+    <!-- Add Book Form -->
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h3>Add Book</h3>
+            <form action="/Home/AddBook" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <input type="number" step="0.01" name="price" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Author</label>
+                    <select name="authorId" class="form-select" required>
+                        @foreach (var author in Model.Authors)
+                        {
+                            <option value="@author.Id">@author.Name</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Book</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Author Form -->
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h3>Add Author</h3>
+            <form action="/Home/AddAuthor" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Country</label>
+                    <input type="text" name="country" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-success">Add Author</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<h2>Available Books</h2>
+<div class="d-flex flex-wrap">
+    @if (Model.Books != null && Model.Books.Any())
+    {
+        @foreach (var book in Model.Books)
+        {
+            <div class="book-card">
+                <h4>@book.Title</h4>
+                <p><strong>Author:</strong> @book.AuthorName</p>
+                <p><strong>Price:</strong> $@book.Price</p>
+                
+                <form action="/Home/RemoveBook" method="post" onsubmit="return confirmRemove();">
+                    <input type="hidden" name="id" value="@book.Id" />
+                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                </form>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-danger">No books available</p>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function confirmRemove() {
+            return confirm("Remove this book?");
+        }
+    </script>
+}
